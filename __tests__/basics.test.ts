@@ -27,7 +27,6 @@ describe('basics', () => {
     expect(http).toBeDefined()
   })
 
-  // Foo
   // responses from httpbin return something like:
   // {
   //     "args": {},
@@ -326,5 +325,18 @@ describe('basics', () => {
     expect(restRes.headers[httpm.Headers.ContentType]).toBe(
       httpm.MediaTypes.ApplicationJson
     )
+  })
+  
+  it('pipes a get request', () => {
+    return new Promise<string>(async (resolve, reject) => {
+      let file: NodeJS.WritableStream = fs.createWriteStream(sampleFilePath)
+      ;(await _http.get('https://httpbin.org/drip?duration=2&numbytes=10&code=200&delay=2')).message
+        .pipe(file)
+        .on('close', () => {
+          let body: string = fs.readFileSync(sampleFilePath).toString()
+          expect(body).toBe('**********')
+          resolve()
+        })
+    })
   })
 })
