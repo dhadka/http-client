@@ -331,13 +331,20 @@ describe('basics', () => {
     return new Promise<string>(async (resolve, reject) => {
       let file: NodeJS.WritableStream = fs.createWriteStream(sampleFilePath)
       let message = (await _http.get('http://httpbin.org/drip?duration=10&numbytes=2&code=200&delay=2')).message
+      let receivedTimeout = false
+      let startTime = Date.now()
       message.socket.setTimeout(1000, () => {
         message.socket.end()
+      })
+      message.on('timeout', () => {
+        receivedTimeout = true;
       })
       message.pipe(file)
         .on('close', () => {
           let body: string = fs.readFileSync(sampleFilePath).toString()
-          expect(body).toBe('**')
+          expect(body.length).toBeLessThan(2)
+          expect(receivedTimeout).toBe(true)
+          expect(Date.now() - startTime).toBeLessThan(5000)
           resolve()
         })
     })
