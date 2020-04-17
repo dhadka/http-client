@@ -330,21 +330,24 @@ describe('basics', () => {
   it('timeout a slow response', () => {
     return new Promise<string>(async (resolve, reject) => {
       let file: NodeJS.WritableStream = fs.createWriteStream(sampleFilePath)
-      let message = (await _http.get('http://httpbin.org/drip?duration=10&numbytes=2&code=200&delay=2')).message
+      let message = (
+        await _http.get(
+          'http://httpbin.org/drip?duration=10&numbytes=2&code=200&delay=2'
+        )
+      ).message
       let receivedTimeout = false
       let startTime = Date.now()
       message.socket.setTimeout(1000, () => {
         receivedTimeout = true
         message.socket.end()
       })
-      message.pipe(file)
-        .on('close', () => {
-          let body: string = fs.readFileSync(sampleFilePath).toString()
-          expect(body).toBe('*')
-          expect(receivedTimeout).toBe(true)
-          expect(Date.now() - startTime).toBeLessThan(5000)
-          resolve()
-        })
+      message.pipe(file).on('close', () => {
+        let body: string = fs.readFileSync(sampleFilePath).toString()
+        expect(body).toBe('*')
+        expect(receivedTimeout).toBe(true)
+        expect(Date.now() - startTime).toBeLessThan(5000)
+        resolve()
+      })
     })
   })
 })
