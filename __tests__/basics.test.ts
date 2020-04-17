@@ -334,8 +334,8 @@ describe('basics', () => {
       let receivedTimeout = false
       let startTime = Date.now()
       message.socket.setTimeout(1000, () => {
-        message.socket.end()
         receivedTimeout = true
+        message.socket.end()
       })
       message.pipe(file)
         .on('close', () => {
