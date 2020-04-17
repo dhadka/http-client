@@ -335,14 +335,12 @@ describe('basics', () => {
       let startTime = Date.now()
       message.socket.setTimeout(1000, () => {
         message.socket.end()
-      })
-      message.on('timeout', () => {
-        receivedTimeout = true;
+        receivedTimeout = true
       })
       message.pipe(file)
         .on('close', () => {
           let body: string = fs.readFileSync(sampleFilePath).toString()
-          expect(body.length).toBeLessThan(2)
+          expect(body.length).toBe('*')
           expect(receivedTimeout).toBe(true)
           expect(Date.now() - startTime).toBeLessThan(5000)
           resolve()
