@@ -27,6 +27,7 @@ describe('basics', () => {
     expect(http).toBeDefined()
   })
 
+  // Foo
   // responses from httpbin return something like:
   // {
   //     "args": {},
