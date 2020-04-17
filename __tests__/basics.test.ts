@@ -327,10 +327,11 @@ describe('basics', () => {
     )
   })
   
-  it('pipes a get request', () => {
+  it('timeout a slow response', () => {
     return new Promise<string>(async (resolve, reject) => {
       let file: NodeJS.WritableStream = fs.createWriteStream(sampleFilePath)
       ;(await _http.get('https://httpbin.org/drip?duration=2&numbytes=10&code=200&delay=2')).message
+        .setTimeout(1000)
         .pipe(file)
         .on('close', () => {
           let body: string = fs.readFileSync(sampleFilePath).toString()
