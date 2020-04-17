@@ -326,7 +326,7 @@ describe('basics', () => {
       httpm.MediaTypes.ApplicationJson
     )
   })
-  
+
   it('timeout a slow response', () => {
     return new Promise<string>(async (resolve, reject) => {
       let file: NodeJS.WritableStream = fs.createWriteStream(sampleFilePath)
