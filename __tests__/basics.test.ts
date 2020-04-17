@@ -340,7 +340,7 @@ describe('basics', () => {
       message.pipe(file)
         .on('close', () => {
           let body: string = fs.readFileSync(sampleFilePath).toString()
-          expect(body.length).toBe('*')
+          expect(body).toBe('*')
           expect(receivedTimeout).toBe(true)
           expect(Date.now() - startTime).toBeLessThan(5000)
           resolve()
